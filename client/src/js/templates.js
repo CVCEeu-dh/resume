@@ -1,0 +1,1 @@
+angular.module("resume").run(["$templateCache", function($templateCache) {$templateCache.put("templates/index.html","index");}]);

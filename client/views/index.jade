@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+html
+  head
+    title #{title}
+    meta(name='pinterest', content='nopin', description="contents subject to copyright")
+    
+    link(href='/css/bootstrap.css', rel='stylesheet')
+    link(href='/css/medium-editor.css', rel='stylesheet')
+    link(href='/css/themes/default.css', rel='stylesheet')
+    link(href='/css/style.css', rel='stylesheet')
+
+  body(ng-app='resume')
+    div.container(ng-controller='CoreCtrl')
+      div.view(ui-view='')
+
+    each src in scripts
+      script(src=src)
