@@ -1,8 +1,7 @@
 // name: create_user
 // to be used with OAuth2provider
-CREATE (k:user {email:{email}, id:{id}})
+CREATE (k:user {email:{email}, uid:{uid}})
   SET
-    k.id = {id},
     k.username   = {username},
 
     k.status     = {status},
@@ -34,9 +33,27 @@ CREATE (k:user {email:{email}, id:{id}})
     k.salt       = {salt},
     k.status     = {status},
     k.activation = {activation}
-RETURN k
+RETURN {
+  uid: k.uid,
+  username: k.username,
+  props: k
+}
 
+// name: count_users
+// return the number of users
+MATCH (u:user)
+RETURN count(u) as total_items
 
+// name: get_users
+// return the users items with privacy for internal properties
+MATCH(u:user)
+WITH (u)
+SKIP {offset}
+LIMIT {limit}
+RETURN {
+  uid: u.uid,
+  username: u.username
+}
 
 // name: remove_user
 // WARNING!!!! destroy everything related to the user, as if it never existed.

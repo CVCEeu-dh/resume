@@ -1,2 +1,9 @@
+/*
+  Generic controller.
+*/
+var controller = require('../helpers/controllers');
 
-var User       = require('../models/user');
+
+module.exports = controller({
+  model: 'user'
+}, {});

@@ -101,4 +101,33 @@ coreRouter.route('/').
 */
 io.use(function (socket, next) {
   _session(socket.request, {}, next);
-})
+});
+
+
+/*
+  REST API
+  ---
+
+  rest api response wrappers
+*/
+express.response.ok = function(result, info) {
+  this.status(200).json({
+    result: result,
+    info: info || {}
+  });
+};
+
+express.response.empty = function(warnings) {
+  // Since The 204 response MUST NOT include a message-body, we use a dummy 200 with status = empty...
+  this.status(404).json({
+    status: 'empty'
+  });
+};
+
+express.response.error = function(statusCode, err) {
+  this.status(statusCode).json({
+    error: _.assign({
+      code: statusCode
+    }, err)
+  });
+};

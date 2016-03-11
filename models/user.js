@@ -11,13 +11,16 @@ module.exports = model({
   model:     'user',
   pluralize: 'users'
 }, {
+  // status const
+  STATUS_ACTIVE: 'active',
+
   create: function(user, next) {
     // enrich user with some field
     var now = utils.now(),
-        id = utils.generateId(),
+        uid = utils.generateId(),
         encrypted,
         activation;
-        
+
     encrypted = utils.pwdEncrypt(user.password, {
       from: 'signup.encrypted',
       secret: settings.secrets.salt
@@ -32,7 +35,7 @@ module.exports = model({
     });
     
     var u = _.assign(user, {
-       id                    : id,                 
+      uid                    : uid,                 
       exec_date              : now.date,
       exec_time              : now.time,
       password               : encrypted.key,
@@ -41,6 +44,6 @@ module.exports = model({
       activation             : activation.key   
     });
      
-    this.wrap('create', u, next);
+    this.wrapOne('create_user', u, next);
   },
 });
