@@ -29,8 +29,10 @@ module.exports = {
       '/js/app.js',
       '/js/controllers/core.js',
       '/js/controllers/draft.js',
-      '/js/controllers/index.js'
+      '/js/controllers/index.js',
+      '/js/controllers/login.js',
       
+      '/js/services.js',
     ]
   }
 }

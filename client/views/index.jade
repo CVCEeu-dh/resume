@@ -8,10 +8,25 @@ html
     link(href='/css/medium-editor.css', rel='stylesheet')
     link(href='/css/themes/default.css', rel='stylesheet')
     link(href='/css/style.css', rel='stylesheet')
+    link(href='https://fonts.googleapis.com/css?family=Merriweather', rel='stylesheet', type='text/css')
+
+    style.
+      body{
+        background-color:#fff;
+        font-family: 'Merriweather', serif;
+      }
 
   body(ng-app='resume')
     div.container(ng-controller='CoreCtrl')
       div.view(ui-view='')
-
     each src in scripts
       script(src=src)
+    script.
+      var user = !{JSON.stringify(user)};
+      /*
+        Apply user and other settings to resume app
+      */
+      angular.module('resume')
+        .constant("RUNTIME", {
+          user: user
+        });

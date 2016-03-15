@@ -1,6 +1,6 @@
 // name: create_user
 // to be used with OAuth2provider
-CREATE (k:user {email:{email}, uid:{uid}})
+MERGE (k:user {email:{email}})
   SET
     k.username   = {username},
 
@@ -42,7 +42,10 @@ RETURN {
 // name: count_users
 // return the number of users
 MATCH (u:user)
-RETURN count(u) as total_items
+RETURN {
+  labels: last(labels(u)),
+  c: count(u)
+} as total_items
 
 // name: get_users
 // return the users items with privacy for internal properties

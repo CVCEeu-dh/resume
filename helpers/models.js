@@ -88,7 +88,9 @@ module.exports = function(options, others) {
         if(err)
           next(err);
         else
-          next(null, results[0], _.assign(_.first(results[1]),{params: params})); // flatten the count array to a single object.
+          next(null, results[0], _.assign({
+            total_items: results[1]
+          },{params: params})); // flatten the count array to a single object.
       });
     },
 

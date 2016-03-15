@@ -4,11 +4,27 @@
   ===
 
 */
-var express       = require('express'),        // call express
+var settings      = require('./settings'),
+    express       = require('express'),        // call express
     compress      = require('compression'),
-    session       = require('express-session'),
     
-    settings      = require('./settings'),
+    // session and cache management
+    redis         = require('redis'),
+    rediscli      = redis.createClient(6379, 'localhost'),
+    session       = require('express-session'),
+    redisStore    = require('connect-redis')(session),
+    _session      = session({
+                      name: 'resume.sid',
+                      secret: settings.secrets.cookie,
+                      // trustProxy: false,
+                      resave: true,
+                      saveUninitialized: true,
+                      store: new redisStore({
+                        client: rediscli
+                      })
+                    }),
+    _             = require('lodash'),
+    
 
     app           = exports.app = express(),                 // define our app using express
     port          = settings.port || process.env.PORT || 8000,
@@ -24,16 +40,20 @@ var express       = require('express'),        // call express
     io            = require('socket.io') // socket server
                       .listen(server),
     // rediscli      = redis.createClient(6379, 'localhost'), // redis client
-    _session      = session({
-                      name: 'hg.sid',
-                      secret: settings.secrets.cookie,
-                      trustProxy: false,
-                      resave: true,
-                      saveUninitialized: true
-                    }),
+    
 
-    coreRouter    = express.Router(), // basi client router
+
+
+    auth          = require('./auth'),
+
+
+    clientRouter  = express.Router(), // basi client router
+    adminRouter   = express.Router(),
+    apiRouter     = express.Router(),
+
     clientFiles   = require('./client/src/files')[env],
+
+    middlewares   = require('./middlewares'),
 
     ctrl          = require('require-all')({
                       dirname: __dirname + '/controllers',
@@ -45,6 +65,7 @@ var express       = require('express'),        // call express
 
 
 console.log(env)
+console.log(_.keys(ctrl.client))
 /*
     statics (dev mode only)
 */
@@ -69,10 +90,17 @@ app.use(compress());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-
-app.use('/', coreRouter); // register client router
 app.use(morgan('combined'))
 app.use(_session);
+app.use(middlewares.session.check);
+app.use(auth.passport.initialize());
+app.use(auth.passport.session());
+
+
+app.use('/admin', adminRouter); // register client router
+app.use('/api', apiRouter); // register client router
+app.use('/', clientRouter); // register client router
+
 
 
 
@@ -80,15 +108,47 @@ app.use(_session);
   
   Client router configuration
   ----
-
+  Routes that do not need authentification go here
 */
-coreRouter.route('/').
+clientRouter.route('/').
   get(function(req, res) { // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
     res.render('index', {
       user: req.user || 'anonymous',
       scripts: clientFiles.scripts
     });
   });
+clientRouter.route('/logout')
+  .get(ctrl.client.auth.logout);
+clientRouter.route('/auth/twitter')
+  .get(ctrl.client.auth.twitter);
+clientRouter.route('/auth/twitter/callback')
+  .get(ctrl.client.auth.twitterCallback);
+
+/*
+  
+  Staff router config
+  ----
+
+*/
+adminRouter.use(middlewares.access.staffonly)
+adminRouter.route('/').
+  get(function(req, res) { // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
+    res.render('admin', {
+      user: req.user || 'anonymous',
+      scripts: clientFiles.scripts
+    });
+  });
+
+
+/*
+  
+  Api router
+  ---
+
+*/
+apiRouter.use(middlewares.access.loginrequired)
+apiRouter.route('/story').
+  get(ctrl.story.findAll)
 
 /*
   

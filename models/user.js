@@ -41,9 +41,13 @@ module.exports = model({
       password               : encrypted.key,
       salt                   : encrypted.salt,
       status                 : user.status || 'disabled',
+      is_staff               : typeof user.is_staff != 'undefined',
       activation             : activation.key   
     });
-     
     this.wrapOne('create_user', u, next);
   },
+
+  check: function(user, next) {
+    
+  }
 });

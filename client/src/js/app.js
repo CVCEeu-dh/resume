@@ -43,9 +43,25 @@ angular
         controller: 'IndexCtrl',
         templateUrl: 'templates/index.html'
       })
+      .state('login', {
+        url: '/login',
+        controller: 'LoginCtrl',
+        templateUrl: 'templates/login.html'
+      })
       .state('draft', {
         url: '/create',
         controller: 'DraftCtrl',
         templateUrl: 'templates/draft.html'
-      });
+      })
+      .state('me', {
+        abstract: true,
+        url: '/me',
+        controller: 'MeCtrl',
+        templateUrl: 'templates/index.html'
+      })
+        .state('me.stories', {
+          url: '/stories',
+          controller: 'MeCtrl',
+          templateUrl: 'templates/index.html'
+        })
   });

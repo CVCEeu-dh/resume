@@ -16,8 +16,16 @@ module.exports = function(options) {
       get: function(req, res){
         res.ok('zarro', io);
       },
-      getMany: function(req, res) {
-        res.ok('zarro');
+      findAll: function(req, res) {
+        var params = {
+          user_uid: req.user.uid
+        };
+        console.log(req.user)
+        Model.getMany(params, function(err, items, info){
+          if(err)
+            return res.error(500, err);
+          return res.ok(items, info);
+        });
       }
     };
   };
