@@ -9,6 +9,6 @@ angular.module('resume')
   /*
     Get a list of stories
   */
-  .factory('StoriesFactory', function ($resource) {
-    return $resource('/api/story');
+  .factory('StoryFactory', function ($resource) {
+    return $resource('/api/story/:id');
   })

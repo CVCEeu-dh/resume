@@ -12,7 +12,8 @@ angular
     'ngResource',
     'ngSanitize',
     'ngCookies',
-    'angular-medium-editor'
+    'angular-medium-editor',
+    'mgcrea.ngStrap'
   ])
   .constant('LOCALES', {
     'locales': {
@@ -34,6 +35,10 @@ angular
   //   $translateProvider.preferredLanguage('en_US');// is applied on first load
     
   // })
+
+  .config(function($locationProvider) {
+    $locationProvider.html5Mode(true);
+  })
   .config(function ($stateProvider, $urlRouterProvider) {
     $urlRouterProvider
       .otherwise("/");
@@ -57,11 +62,22 @@ angular
         abstract: true,
         url: '/me',
         controller: 'MeCtrl',
-        templateUrl: 'templates/index.html'
+        templateUrl: 'templates/me.html'
       })
         .state('me.stories', {
           url: '/stories',
-          controller: 'MeCtrl',
-          templateUrl: 'templates/index.html'
+          controller: 'ItemsCtrl',
+          templateUrl: 'templates/me.stories.html',
+          resolve: {
+            items: function(StoryFactory) {
+              return StoryFactory.get().$promise;
+            },
+            model: function() {
+              return 'story';
+            },
+            factory: function(StoryFactory) {
+              return StoryFactory;
+            }
+          }
         })
   });

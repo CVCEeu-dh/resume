@@ -6,9 +6,9 @@
  * common functions go here.
  */
 angular.module('resume')
-  .controller('CoreCtrl', function ($scope, $log, RUNTIME) {
-    $log.log('CoreCtrl ready, user:', RUNTIME.user.username);
+  .controller('ItemsCtrl', function ($scope, $log, items, model, factory) {
+    $log.log('ItemsCtrl ready', items);
+    $scope.items = items.result;
 
-    $scope.user = RUNTIME.user;
   });
   

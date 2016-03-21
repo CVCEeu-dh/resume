@@ -104,25 +104,7 @@ app.use('/', clientRouter); // register client router
 
 
 
-/*
-  
-  Client router configuration
-  ----
-  Routes that do not need authentification go here
-*/
-clientRouter.route('/').
-  get(function(req, res) { // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
-    res.render('index', {
-      user: req.user || 'anonymous',
-      scripts: clientFiles.scripts
-    });
-  });
-clientRouter.route('/logout')
-  .get(ctrl.client.auth.logout);
-clientRouter.route('/auth/twitter')
-  .get(ctrl.client.auth.twitter);
-clientRouter.route('/auth/twitter/callback')
-  .get(ctrl.client.auth.twitterCallback);
+
 
 /*
   
@@ -150,6 +132,33 @@ apiRouter.use(middlewares.access.loginrequired)
 apiRouter.route('/story').
   get(ctrl.story.findAll)
 
+/*
+  
+  Client router configuration
+  ----
+  Routes that do not need authentification go here.
+  This is the las one because it handles the 404 page
+*/
+clientRouter.route('/').
+  get(function(req, res) { // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
+    res.render('index', {
+      user: req.user || 'anonymous',
+      scripts: clientFiles.scripts
+    });
+  });
+clientRouter.route('/logout')
+  .get(ctrl.client.auth.logout);
+clientRouter.route('/auth/twitter')
+  .get(ctrl.client.auth.twitter);
+clientRouter.route('/auth/twitter/callback')
+  .get(ctrl.client.auth.twitterCallback);
+clientRouter.route('/*')
+  .get(function(req, res) { 
+    res.render('index', {
+      user: req.user || 'anonymous',
+      scripts: clientFiles.scripts
+    });
+  });
 /*
   
   Socket io config

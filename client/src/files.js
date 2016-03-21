@@ -24,13 +24,17 @@ module.exports = {
       '/js/lib/angular-sanitize.min.js', 
       '/js/lib/angular-ui-router.min.js', 
       '/js/lib/angular-medium-editor.min.js',
+      '/js/lib/angular-strap.min.js',
+      '/js/lib/angular-strap.tpl.min.js',
 
       // resume app
       '/js/app.js',
       '/js/controllers/core.js',
       '/js/controllers/draft.js',
       '/js/controllers/index.js',
+      '/js/controllers/items.js',
       '/js/controllers/login.js',
+      '/js/controllers/me.js',
       
       '/js/services.js',
     ]

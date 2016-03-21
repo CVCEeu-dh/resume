@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 html
   head
+    base(href="/")
     title #{title}
     meta(name='pinterest', content='nopin', description="contents subject to copyright")
     
@@ -17,7 +18,13 @@ html
       }
 
   body(ng-app='resume')
-    div.container(ng-controller='CoreCtrl')
+    header(ng-controller='CoreCtrl')
+      nav.navbar.navbar-default.navbar-fixed-top
+        div.container-fluid
+          div.navbar-header
+            a.navbar-brand RESume
+
+    div.container
       div.view(ui-view='')
     each src in scripts
       script(src=src)
